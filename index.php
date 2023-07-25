@@ -19,6 +19,34 @@
                 <div class="d-flex justify-content-center mt-5">
                     <p><a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Record</a></p>
                 </div>
+                <table class="table table-bordered">
+                    <thead>
+                      <th>Name</th>
+                      <th>Gender</th>
+                      <th>Contact</th>
+                      <th>Edit</th>
+                      <th>Delete</th>
+                    </thead>
+                    <tbody id="tbody">
+                      <?php
+                           $con=mysqli_connect('localhost','root','','php_ajax');
+                           $sql="select * from users";
+                           $res=$con->query($sql);
+                           while($row=$res->fetch_assoc()){
+                              echo
+                              "
+                                 <tr>
+                                    <td>{$row['name']}</td>
+                                    <td>{$row['gender']}</td>
+                                    <td>{$row['contact']}</td>
+                                    <td><a href='#' class='btn btn-primary'>Edit</a></td>
+                                    <td><a href='#' class='btn btn-danger'>DELETE</a></td>
+                                 </tr>
+                              ";
+                           }
+                      ?>
+                    </tbody>
+                </table>
                 <!-- Add Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div class="modal-dialog">
@@ -31,6 +59,8 @@
                       </div>
                       <div class="modal-body">
                         <form id="frm">
+                            <input type="hidden" name="action" id="action" value="Insert">
+                            <input type="hidden" name="id" id="uid" value="0">
                             <div class="mb-3 form-group">
                                 <label for="exampleFormControlInput1" class="form-label">Name</label>
                                 <input type="text" class="form-control" name="name" id="name" placeholder="Name">
@@ -59,5 +89,28 @@
     </secion>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function(){
+            $("#frm").submit(function(event){
+               event.preventDefault();
+               $.ajax({
+                    url:"ajax_action.php",
+                    type:"post",
+                    data:$("#frm").serialize(),
+                    beforeSend:function(){
+                          $("frm").find("input[type='submit']").val('Loading...');
+                    },
+                    success:function(res){
+                      if(res)
+                      {
+                          $("#tbody").append(res);
+                      }else{
+                         alert('Failed try Again')
+                      }
+                    }
+               });
+            });
+        });
+    </script>
   </body>
 </html>
