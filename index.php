@@ -98,17 +98,29 @@
                     type:"post",
                     data:$("#frm").serialize(),
                     beforeSend:function(){
-                          $("frm").find("input[type='submit']").val('Loading...');
+
+                          $("#frm").find("input[type='submit']").val('Loading...');
+
                     },
                     success:function(res){
+
                       if(res)
                       {
                           $("#tbody").append(res);
                       }else{
                          alert('Failed try Again')
                       }
+                      $("#frm").find("input[type='submit']").val('Submit');
+                      clear_input();
+                      $("#exampleModal").modal('hide');
                     }
                });
+
+               function clear_input(){
+                  $('#frm').find(".form-control").val("");
+                  $("#action").val("Insert");
+                  $("#uid").val("0");
+               }
             });
         });
     </script>
